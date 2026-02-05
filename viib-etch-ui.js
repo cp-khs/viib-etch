@@ -103,6 +103,9 @@
           btnTabDiffEl: null,
           pathInputEl: null,
           statusEl: null,
+          // Optional directory-picker mode (used by "Set directory" -> Browse)
+          dirPicker: null, // { title?: string, onPick: (dir)=>void, onCancel?: ()=>void }
+          btnPickDirEl: null,
           isMinimized: false,
         },
       };
@@ -2545,6 +2548,14 @@
         pathInput.style.minWidth = '0';
         pathInput.placeholder = 'Working directory';
 
+        const btnPickDir = document.createElement('button');
+        btnPickDir.type = 'button';
+        btnPickDir.className = 've-iconbtn';
+        btnPickDir.textContent = 'Use';
+        btnPickDir.title = 'Use this directory';
+        btnPickDir.style.minWidth = '52px';
+        btnPickDir.style.display = 'none';
+
         const status = document.createElement('div');
         status.className = 've-muted';
         status.style.fontSize = '11px';
@@ -2554,6 +2565,7 @@
 
         topRow.appendChild(pathLabel);
         topRow.appendChild(pathInput);
+        topRow.appendChild(btnPickDir);
         topRow.appendChild(status);
 
         const body = document.createElement('div');
@@ -2939,6 +2951,12 @@
         });
 
         const closeWindow = () => {
+          // If a directory picker is active, notify cancellation.
+          try {
+            if (fe.dirPicker && typeof fe.dirPicker.onCancel === 'function') {
+              fe.dirPicker.onCancel();
+            }
+          } catch {}
           try {
             if (backdrop.parentNode) backdrop.parentNode.removeChild(backdrop);
           } catch {}
@@ -2977,6 +2995,8 @@
           fe._applyEditorMode = null;
           fe.pathInputEl = null;
           fe.statusEl = null;
+          fe.dirPicker = null;
+          fe.btnPickDirEl = null;
         };
 
         btnClose.addEventListener('click', closeWindow);
@@ -3001,6 +3021,7 @@
         fe.btnTabDiffEl = btnTabDiff;
         fe.pathInputEl = pathInput;
         fe.statusEl = status;
+        fe.btnPickDirEl = btnPickDir;
 
         if (prefs.directory) {
           pathInput.value = String(prefs.directory);
@@ -3009,7 +3030,39 @@
           applyMinimizedState(true);
         }
 
+        // Directory picker: default hidden, enabled via setFileExplorerDirPicker(...)
+        btnPickDir.addEventListener('click', () => {
+          const picker = fe.dirPicker;
+          if (!picker || typeof picker.onPick !== 'function') return;
+          const dir = fe.pathInputEl ? String(fe.pathInputEl.value || '').trim() : '';
+          try { picker.onPick(dir); } catch {}
+          // Clear picker mode after selection
+          try {
+            fe.dirPicker = null;
+            if (fe.btnPickDirEl) fe.btnPickDirEl.style.display = 'none';
+            if (fe.titleEl) fe.titleEl.textContent = fe.mode === 'changes' ? 'Changes' : 'File Explorer';
+          } catch {}
+        });
+
         return fe;
+      };
+
+      const setFileExplorerDirPicker = (picker) => {
+        const fe = ensureFileExplorerWindow();
+        fe.dirPicker = picker || null;
+        try {
+          if (fe.btnPickDirEl) {
+            fe.btnPickDirEl.style.display = picker ? 'inline-flex' : 'none';
+          }
+        } catch {}
+        try {
+          if (fe.titleEl) {
+            fe.titleEl.textContent =
+              picker && picker.title
+                ? String(picker.title)
+                : (fe.mode === 'changes' ? 'Changes' : 'File Explorer');
+          }
+        } catch {}
       };
 
       const updateFileExplorerStatus = (text) => {
@@ -3023,6 +3076,10 @@
         fe.editMode = false;
         fe.viewOnly = true;
         fe.changesTab = 'current';
+        // Directory picker only makes sense in explorer mode.
+        if (fe.mode === 'changes') {
+          try { setFileExplorerDirPicker(null); } catch {}
+        }
         try {
           if (fe.titleEl) fe.titleEl.textContent = fe.mode === 'changes' ? 'Changes' : 'File Explorer';
         } catch {}
@@ -3227,7 +3284,7 @@
         ul.style.padding = '0';
         ul.style.margin = '0';
 
-        const makeRow = (label, meta, onClick) => {
+        const makeRow = (label, meta, onClick, dragPath) => {
           const row = document.createElement('button');
           row.type = 'button';
           row.style.display = 'flex';
@@ -3243,6 +3300,24 @@
           row.addEventListener('mouseover', () => { row.style.background = '#f3f4f6'; });
           row.addEventListener('mouseout', () => { row.style.background = 'transparent'; });
           row.addEventListener('click', () => { if (onClick) onClick(); });
+
+          // Allow dragging a directory path out (useful for Set Directory -> drop).
+          const dragVal = dragPath ? String(dragPath || '').trim() : '';
+          if (dragVal) {
+            try {
+              row.draggable = true;
+              row.title = row.title || 'Drag to set directory';
+              row.addEventListener('dragstart', (e) => {
+                try {
+                  if (e && e.dataTransfer) {
+                    e.dataTransfer.effectAllowed = 'copy';
+                    e.dataTransfer.setData('application/x-viib-etch-path', dragVal);
+                    e.dataTransfer.setData('text/plain', dragVal);
+                  }
+                } catch {}
+              });
+            } catch {}
+          }
 
           const left = document.createElement('div');
           left.style.display = 'flex';
@@ -3290,7 +3365,7 @@
             if (fe2.pathInputEl) fe2.pathInputEl.value = parent;
             saveFileExplorerPrefs({ directory: parent });
             openFileExplorerAtDir(parent);
-          });
+          }, parent);
         }
 
         for (const ent of entries || []) {
@@ -3310,7 +3385,7 @@
             } else {
               openFileInEditor(fullPath);
             }
-          });
+          }, isDir ? fullPath : '');
         }
 
         list.appendChild(ul);
@@ -3633,6 +3708,36 @@
         await refreshChats();
         if (res && res.id) await openChatId(res.id);
       };
+
+      const openDirectoryPicker = ({ title, initialDir, onPick, onCancel } = {}) => {
+        const pane = getActivePane();
+        if (!pane || !pane.chatId) {
+          alert('Open a chat first.');
+          return;
+        }
+        // Ensure explorer mode (dir bar visible)
+        setFileWindowMode('explorer');
+        const fe = ensureFileExplorerWindow();
+        try { if (fe.pathInputEl) fe.pathInputEl.value = String(initialDir || '').trim() || (pane.chat && pane.chat.base_dir) || '.'; } catch {}
+
+        // Enable directory-picker mode
+        setFileExplorerDirPicker({
+          title: title || 'Select Directory',
+          onPick: (dir) => {
+            try { if (typeof onPick === 'function') onPick(dir); } finally {
+              // picker will be cleared by the button handler as well; keep idempotent.
+              try { setFileExplorerDirPicker(null); } catch {}
+            }
+          },
+          onCancel: () => {
+            try { if (typeof onCancel === 'function') onCancel(); } catch {}
+            try { setFileExplorerDirPicker(null); } catch {}
+          },
+        });
+
+        const start = (fe.pathInputEl && String(fe.pathInputEl.value || '').trim()) || (pane.chat && pane.chat.base_dir) || '.';
+        openFileExplorerAtDir(start);
+      };
       const openBaseDirModal = (pane) => {
         if (!pane || !pane.chatId) {
           alert('No chat selected.');
@@ -3650,8 +3755,16 @@
           <main>
             <div class="ve-field">
               <label>Directory (optional)</label>
-              <input class="ve-input" data-basedir="1" placeholder="e.g. /data/sjung/src/project" />
-              <div class="ve-muted" style="font-size:12px">Used as the working directory for tool execution in this chat. Leave empty to unset.</div>
+              <input class="ve-input" data-basedir="1" placeholder="e.g. /data/sjung/src/project" style="width:100%" />
+              <div style="margin-top:8px;display:flex;gap:8px;align-items:center;justify-content:space-between">
+                <button type="button" class="ve-btn" data-basedir-browse="1">Browse…</button>
+                <div class="ve-muted" style="font-size:12px;text-align:right;flex:1 1 auto;margin-left:8px">
+                  Tip: you can drag a folder from the File Explorer list and drop it onto this field.
+                </div>
+              </div>
+              <div class="ve-muted" style="font-size:12px;margin-top:4px">
+                Used as the working directory for tool execution in this chat. Leave empty to unset.
+              </div>
             </div>
           </main>
         `;
@@ -3660,6 +3773,78 @@
 
         const baseDirInput = modal.querySelector('[data-basedir="1"]');
         if (baseDirInput) baseDirInput.value = (pane.chat && pane.chat.base_dir) ? String(pane.chat.base_dir) : '';
+
+        const btnBrowse = modal.querySelector('[data-basedir-browse="1"]');
+
+        const extractDroppedPath = (ev) => {
+          try {
+            const dt = ev && ev.dataTransfer;
+            if (!dt) return '';
+            const raw =
+              (dt.getData && dt.getData('application/x-viib-etch-path')) ||
+              (dt.getData && dt.getData('text/plain')) ||
+              (dt.getData && dt.getData('text/uri-list')) ||
+              '';
+            const first = String(raw || '').split('\n')[0].trim();
+            if (!first) return '';
+            // Convert file:// URL to path when possible.
+            if (first.startsWith('file://')) {
+              try {
+                const u = new URL(first);
+                // URL pathname is percent-decoded later.
+                const p = decodeURIComponent(u.pathname || '');
+                return p || '';
+              } catch {
+                return first;
+              }
+            }
+            return first;
+          } catch {
+            return '';
+          }
+        };
+
+        const setDropHighlight = (on) => {
+          try {
+            if (!baseDirInput) return;
+            baseDirInput.style.outline = on ? '2px dashed rgba(59,130,246,0.8)' : '';
+            baseDirInput.style.outlineOffset = on ? '2px' : '';
+          } catch {}
+        };
+
+        // Drag & drop support (primarily from File Explorer list rows).
+        if (baseDirInput) {
+          baseDirInput.addEventListener('dragover', (e) => {
+            const p = extractDroppedPath(e);
+            if (!p) return;
+            e.preventDefault();
+            setDropHighlight(true);
+          });
+          baseDirInput.addEventListener('dragleave', () => setDropHighlight(false));
+          baseDirInput.addEventListener('drop', (e) => {
+            const p = extractDroppedPath(e);
+            if (!p) return;
+            e.preventDefault();
+            setDropHighlight(false);
+            try { baseDirInput.value = p; } catch {}
+          });
+        }
+
+        if (btnBrowse) {
+          btnBrowse.addEventListener('click', () => {
+            const start = baseDirInput ? String(baseDirInput.value || '').trim() : '';
+            openDirectoryPicker({
+              title: 'Select Base Directory',
+              initialDir: start || (pane.chat && pane.chat.base_dir) || '.',
+              onPick: (dir) => {
+                const d = String(dir || '').trim();
+                if (baseDirInput) baseDirInput.value = d;
+                // Keep focus in the modal for quick Enter->Save.
+                try { baseDirInput && baseDirInput.focus(); } catch {}
+              },
+            });
+          });
+        }
 
         const close = () => {
           try { document.body.removeChild(backdrop); } catch {}

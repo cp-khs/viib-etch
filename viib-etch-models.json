@@ -1,107 +1,216 @@
 [
-    {
-        "name": "gpt-4.1-mini",
-        "model": "gpt-4.1-mini",
-        "baseUrl": "https://api.openai.com/v1",
-        "api_key_file": "/data/sjung/src/viib-etch/.openai-api-key",
-        "reasoning_effort": "off"
-    },
-    {
-        "name": "openrouter/gemini-3-pro-preview",
-        "model": "google/gemini-3-pro-preview",
-        "baseUrl": "https://openrouter.ai/api/v1",
-        "api_key_file": "/data/sjung/src/viib-etch/.openrouter-api-key",
-        "reasoning_effort": "off"
-    },
-    {
-        "name": "gemini-3-pro-preview",
-        "model": "gemini-3-pro-preview",
-        "baseUrl": "https://generativelanguage.googleapis.com",
-        "api_key_file": "/data/sjung/src/viib-etch/.google-api-key",
-        "system_prompt_file": "/data/sjung/src/viib-etch/viib-etch.system.coder.gemini.prompt",
-        "tools": ["run_terminal_cmd", "rg", "delete_file", "read_lints", "todo_write", "edit_file", "read_file", "list_dir", "glob_file_search", "googleSearch", "codeExecution"],
-        "reasoning_effort": "high"
-    },
-    {
-        "name": "grok-4.1-fast",
-        "model": "x-ai/grok-4.1-fast:live",
-        "baseUrl": "https://openrouter.ai/api/v1",
-        "api_key_file": "/data/sjung/src/viib-etch/.openrouter-api-key",
-        "reasoning_effort": "high"
-    },
-    {
-        "name": "grok-4",
-        "model": "x-ai/grok-4:live",
-        "baseUrl": "https://openrouter.ai/api/v1",
-        "api_key_file": "/data/sjung/src/viib-etch/.openrouter-api-key",
-        "reasoning_effort": "high"
-    },
-    {
-        "name": "gemini-3-pro-preview",
-        "model": "google/gemini-3-pro-preview",
-        "baseUrl": "https://openrouter.ai/api/v1",
-        "api_key_file": "/data/sjung/src/viib-etch/.openrouter-api-key",
-        "reasoning_effort": "high"
-    },
-    {
-        "name": "gpt-5.2-coder",
-        "model": "gpt-5.2",
-        "baseUrl": "https://api.openai.com/v1",
-        "api_key_file": "/data/sjung/src/viib-etch/.openai-api-key",
-        "system_prompt_file": "/data/sjung/src/viib-etch/viib-etch.system.coder.prompt",
-        "tools": ["run_terminal_cmd", "rg", "delete_file", "read_lints", "todo_write", "apply_patch", "read_file", "list_dir", "glob_file_search", "web_search_preview"],
-        "reasoning_effort": "high"
-    },
-    {
-        "name": "gpt-5.1-coder",
-        "model": "gpt-5.1",
-        "baseUrl": "https://api.openai.com/v1",
-        "api_key_file": "/data/sjung/src/viib-etch/.openai-api-key",
-        "system_prompt_file": "/data/sjung/src/viib-etch/viib-etch.system.coder.prompt",
-        "tools": ["run_terminal_cmd", "rg", "delete_file", "read_lints", "todo_write", "apply_patch", "read_file", "list_dir", "glob_file_search", "web_search_preview"],
-        "reasoning_effort": "high"
-    },
-    {
-        "name": "gpt-4.1-coder",
-        "model": "gpt-4.1",
-        "baseUrl": "https://api.openai.com/v1",
-        "api_key_file": "/data/sjung/src/viib-etch/.openai-api-key",
-        "system_prompt_file": "/data/sjung/src/viib-etch/viib-etch.system.coder.prompt",
-        "tools": ["run_terminal_cmd", "rg", "delete_file", "read_lints", "todo_write", "apply_patch", "read_file", "list_dir", "glob_file_search"],
-        "reasoning_effort": "off"
-    },
-    {
-        "name": "gpt-5.1-pm",
-        "model": "gpt-5.1",
-        "baseUrl": "https://api.openai.com/v1",
-        "api_key_file": "/data/sjung/src/viib-etch/.openai-api-key",
-        "system_prompt_file": "/data/sjung/src/viib-etch/viib-etch.system.pm.prompt",
-        "tools": ["run_terminal_cmd", "rg", "delete_file", "read_lints", "todo_write", "apply_patch", "read_file", "list_dir", "glob_file_search", "web_search_preview"],
-        "reasoning_effort": "high"
-    },
-    {
-        "name": "gpt-5.1-analyst",
-        "model": "gpt-5.1",
-        "baseUrl": "https://api.openai.com/v1",
-        "api_key_file": "/data/sjung/src/viib-etch/.openai-api-key",
-        "system_prompt_file": "/data/sjung/src/viib-etch/viib-etch.system.analyst.prompt",
-        "tools": ["run_terminal_cmd", "rg", "delete_file", "read_lints", "todo_write", "apply_patch", "read_file", "list_dir", "glob_file_search", "web_search_preview"],
-        "reasoning_effort": "high"
-    },
-    {
-        "name": "gpt-5.1-trader",
-        "model": "gpt-5.1",
-        "baseUrl": "https://api.openai.com/v1",
-        "api_key_file": "/data/sjung/src/viib-etch/.openai-api-key",
-        "system_prompt_file": "/data/sjung/src/viib-etch/viib-etch.system.trader.prompt",
-        "tools": ["run_terminal_cmd", "rg", "delete_file", "read_lints", "todo_write", "apply_patch", "read_file", "list_dir", "glob_file_search", "web_search_preview"],
-        "reasoning_effort": "high"
-    },
-    {
-        "name": "gemini-3-pro-image-preview",
-        "model": "gemini-3-pro-image-preview",
-        "baseUrl": "https://generativelanguage.googleapis.com",
-        "api_key_file": "/data/sjung/src/viib-etch/.google-api-key",
-        "reasoning_effort": "high"
-    }
+  {
+    "name": "openai/gpt-4.1-mini",
+    "model": "gpt-4.1-mini",
+    "baseUrl": "https://api.openai.com/v1",
+    "api_key_file": ".openai-api-key",
+    "reasoning_effort": "off"
+  },
+  {
+    "name": "openrouter/gemini-3-pro-preview",
+    "model": "google/gemini-3-pro-preview",
+    "baseUrl": "https://openrouter.ai/api/v1",
+    "api_key_file": ".openrouter-api-key",
+    "reasoning_effort": "off"
+  },
+  {
+    "name": "google/gemini-3-pro-preview",
+    "model": "gemini-3-pro-preview",
+    "baseUrl": "https://generativelanguage.googleapis.com",
+    "api_key_file": ".google-api-key",
+    "system_prompt_file": "viib-etch.system.coder.gemini.prompt",
+    "tools": [
+      "run_terminal_cmd",
+      "rg",
+      "delete_file",
+      "read_lints",
+      "todo_write",
+      "edit_file",
+      "read_file",
+      "list_dir",
+      "glob_file_search",
+      "googleSearch",
+      "codeExecution"
+    ],
+    "reasoning_effort": "high"
+  },
+  {
+    "name": "openai/gpt-4.1-mini",
+    "model": "gpt-4.1-mini",
+    "baseUrl": "https://api.openai.com/v1",
+    "api_key_file": ".openai-api-key",
+    "reasoning_effort": "off"
+  },
+  {
+    "name": "anthropic/claude-haiku-4-5-20251001",
+    "model": "claude-haiku-4-5-20251001",
+    "baseUrl": "https://api.anthropic.com/v1",
+    "api_key_file": ".anthropic-api-key",
+    "reasoning_effort": "high"
+  },
+  {
+    "name": "anthropic/claude-sonnet-4-5-20250929",
+    "model": "claude-sonnet-4-5-20250929",
+    "baseUrl": "https://api.anthropic.com/v1",
+    "api_key_file": ".anthropic-api-key",
+    "reasoning_effort": "high"
+  },
+  {
+    "name": "anthropic/claude-opus-4-5-20251101",
+    "model": "claude-opus-4-5-20251101",
+    "baseUrl": "https://api.anthropic.com/v1",
+    "api_key_file": ".anthropic-api-key",
+    "reasoning_effort": "high",
+    "tools": [
+      "run_terminal_cmd",
+      "rg",
+      "delete_file",
+      "read_lints",
+      "todo_write",
+      "apply_patch",
+      "read_file",
+      "list_dir",
+      "glob_file_search"
+    ]
+  },
+  {
+    "name": "openrouter/grok-4",
+    "model": "x-ai/grok-4:live",
+    "baseUrl": "https://openrouter.ai/api/v1",
+    "api_key_file": ".openrouter-api-key",
+    "reasoning_effort": "high"
+  },
+  {
+    "name": "openrouter/gemini-3-pro-preview",
+    "model": "google/gemini-3-pro-preview",
+    "baseUrl": "https://openrouter.ai/api/v1",
+    "api_key_file": ".openrouter-api-key",
+    "reasoning_effort": "high"
+  },
+  {
+    "name": "openai/gpt-5.2-coder",
+    "model": "gpt-5.2",
+    "baseUrl": "https://api.openai.com/v1",
+    "api_key_file": ".openai-api-key",
+    "system_prompt_file": "viib-etch.system.coder.prompt",
+    "tools": [
+      "run_terminal_cmd",
+      "rg",
+      "delete_file",
+      "read_lints",
+      "todo_write",
+      "apply_patch",
+      "read_file",
+      "list_dir",
+      "glob_file_search",
+      "web_search_preview"
+    ],
+    "reasoning_effort": "high"
+  },
+  {
+    "name": "openai/gpt-5.1-coder",
+    "model": "gpt-5.1",
+    "baseUrl": "https://api.openai.com/v1",
+    "api_key_file": ".openai-api-key",
+    "system_prompt_file": "viib-etch.system.coder.prompt",
+    "tools": [
+      "run_terminal_cmd",
+      "rg",
+      "delete_file",
+      "read_lints",
+      "todo_write",
+      "apply_patch",
+      "read_file",
+      "list_dir",
+      "glob_file_search",
+      "web_search_preview"
+    ],
+    "reasoning_effort": "high"
+  },
+  {
+    "name": "openai/gpt-4.1-coder",
+    "model": "gpt-4.1",
+    "baseUrl": "https://api.openai.com/v1",
+    "api_key_file": ".openai-api-key",
+    "system_prompt_file": "viib-etch.system.coder.prompt",
+    "tools": [
+      "run_terminal_cmd",
+      "rg",
+      "delete_file",
+      "read_lints",
+      "todo_write",
+      "apply_patch",
+      "read_file",
+      "list_dir",
+      "glob_file_search"
+    ],
+    "reasoning_effort": "off"
+  },
+  {
+    "name": "openai/gpt-5.1-pm",
+    "model": "gpt-5.1",
+    "baseUrl": "https://api.openai.com/v1",
+    "api_key_file": ".openai-api-key",
+    "system_prompt_file": "viib-etch.system.pm.prompt",
+    "tools": [
+      "run_terminal_cmd",
+      "rg",
+      "delete_file",
+      "read_lints",
+      "todo_write",
+      "apply_patch",
+      "read_file",
+      "list_dir",
+      "glob_file_search",
+      "web_search_preview"
+    ],
+    "reasoning_effort": "high"
+  },
+  {
+    "name": "openai/gpt-5.1-analyst",
+    "model": "gpt-5.1",
+    "baseUrl": "https://api.openai.com/v1",
+    "api_key_file": ".openai-api-key",
+    "system_prompt_file": "viib-etch.system.analyst.prompt",
+    "tools": [
+      "run_terminal_cmd",
+      "rg",
+      "delete_file",
+      "read_lints",
+      "todo_write",
+      "apply_patch",
+      "read_file",
+      "list_dir",
+      "glob_file_search",
+      "web_search_preview"
+    ],
+    "reasoning_effort": "high"
+  },
+  {
+    "name": "openai/gpt-5.1-trader",
+    "model": "gpt-5.1",
+    "baseUrl": "https://api.openai.com/v1",
+    "api_key_file": ".openai-api-key",
+    "system_prompt_file": "viib-etch.system.trader.prompt",
+    "tools": [
+      "run_terminal_cmd",
+      "rg",
+      "delete_file",
+      "read_lints",
+      "todo_write",
+      "apply_patch",
+      "read_file",
+      "list_dir",
+      "glob_file_search",
+      "web_search_preview"
+    ],
+    "reasoning_effort": "high"
+  },
+  {
+    "name": "google/gemini-3-pro-image-preview",
+    "model": "gemini-3-pro-image-preview",
+    "baseUrl": "https://generativelanguage.googleapis.com",
+    "api_key_file": ".google-api-key",
+    "reasoning_effort": "high"
+  }
 ]

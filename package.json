@@ -24,6 +24,11 @@
     "type": "git",
     "url": "https://github.com/iproudhon/viib-etch.git"
   },
+  "scripts": {
+    "start": "node viib-etch-ui.js web",
+    "ui": "node viib-etch-ui.js web",
+    "dev": "node --watch viib-etch-ui.js web"
+  },
   "keywords": [
     "ai",
     "coding",
