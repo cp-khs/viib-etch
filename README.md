@@ -1,5 +1,7 @@
 # viib-etch
 
+> **[한국어 문서 (Korean Documentation)](README.ko.md)**
+
 A powerful Node.js library for building coding agents with LLM integration. Designed for AI-powered development tools like Cursor IDE, viib-etch provides a complete interface for managing chat sessions, executing tools, streaming responses, and handling complex multi-turn conversations with large language models.
 
 ## Features
